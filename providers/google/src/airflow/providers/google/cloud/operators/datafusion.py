@@ -935,7 +935,7 @@ class CloudDataFusionStopPipelineOperator(GoogleCloudBaseOperator):
         api_version: str = "v1beta1",
         gcp_conn_id: str = "google_cloud_default",
         impersonation_chain: str | Sequence[str] | None = None,
-        run_id: str = None,
+        run_id: str | None = None,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
