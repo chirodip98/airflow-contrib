@@ -532,6 +532,7 @@ class DataFusionHook(GoogleBaseHook):
         instance_url: str,
         namespace: str = "default",
         pipeline_type: DataFusionPipelineType = DataFusionPipelineType.BATCH,
+        run_id: str = None,
     ) -> None:
         """
         Stop a Cloud Data Fusion pipeline. Works for both batch and stream pipelines.
@@ -541,14 +542,22 @@ class DataFusionHook(GoogleBaseHook):
         :param namespace: f your pipeline belongs to a Basic edition instance, the namespace ID
             is always default. If your pipeline belongs to an Enterprise edition instance, you
             can create a namespace.
+        :pipeline_type: Can be either BATCH or STREAM
+        :param run_id : The specific runId to stop execution if available , when absent It will stop all Runs under App: pipeline_name
         """
-        url = os.path.join(
+        base_stop_url = os.path.join(
             self._base_url(instance_url, namespace),
             quote(pipeline_name),
             self.cdap_program_type(pipeline_type=pipeline_type),
             self.cdap_program_id(pipeline_type=pipeline_type),
-            "stop",
         )
+
+        if run_id:
+            url = os.path.join(base_stop_url, "runs", quote(str(run_id)), "stop")
+
+        else:
+            url = os.path.join(base_stop_url, "stop")
+
         response = self._cdap_request(url=url, method="POST")
         self._check_response_status_and_data(
             response, f"Stopping a pipeline failed with code {response.status}"
