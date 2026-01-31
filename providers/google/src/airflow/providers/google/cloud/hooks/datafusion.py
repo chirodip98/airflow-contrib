@@ -532,7 +532,7 @@ class DataFusionHook(GoogleBaseHook):
         instance_url: str,
         namespace: str = "default",
         pipeline_type: DataFusionPipelineType = DataFusionPipelineType.BATCH,
-        run_id: str = None,
+        run_id: str | None = None,
     ) -> None:
         """
         Stop a Cloud Data Fusion pipeline. Works for both batch and stream pipelines.
