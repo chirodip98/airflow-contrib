@@ -497,6 +497,33 @@ class TestCloudDataFusionStopPipelineOperator:
             instance_url=INSTANCE_URL, pipeline_name=PIPELINE_NAME, namespace=NAMESPACE
         )
 
+    @mock.patch(HOOK_STR)
+    def test_execute_check_hook_call_should_execute_successfully_with_runId(self, mock_hook):
+        mock_hook.return_value.get_instance.return_value = {
+            "apiEndpoint": INSTANCE_URL,
+            "serviceEndpoint": INSTANCE_URL,
+        }
+        op = CloudDataFusionStopPipelineOperator(
+            task_id="test_tasks",
+            pipeline_name=PIPELINE_NAME,
+            instance_name=INSTANCE_NAME,
+            namespace=NAMESPACE,
+            location=LOCATION,
+            project_id=PROJECT_ID,
+            run_id="sample-run-id",
+        )
+        op.execute(context=mock.MagicMock())
+        mock_hook.return_value.get_instance.assert_called_once_with(
+            instance_name=INSTANCE_NAME, location=LOCATION, project_id=PROJECT_ID
+        )
+
+        mock_hook.return_value.stop_pipeline.assert_called_once_with(
+            instance_url=INSTANCE_URL,
+            pipeline_name=PIPELINE_NAME,
+            namespace=NAMESPACE,
+            run_id="sample-run-id",
+        )
+
 
 class TestCloudDataFusionListPipelinesOperator:
     @mock.patch(HOOK_STR)

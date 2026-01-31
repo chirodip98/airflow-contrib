@@ -61,19 +61,19 @@ PROJECT_ID = os.environ.get("SYSTEM_TESTS_GCP_PROJECT") or DEFAULT_GCP_SYSTEM_TE
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID", "default")
 LOCATION = "europe-north1"
 DAG_ID = "datafusion"
-INSTANCE_NAME = f"df-{ENV_ID}".replace("_", "-")
+INSTANCE_NAME = f"test-instance-{DAG_ID}".replace("_", "-")
 INSTANCE = {
     "type": "BASIC",
     "displayName": INSTANCE_NAME,
     "dataprocServiceAccount": SERVICE_ACCOUNT,
 }
 
-BUCKET_NAME_1 = f"bucket1-{DAG_ID}-{ENV_ID}".replace("_", "-")
-BUCKET_NAME_2 = f"bucket2-{DAG_ID}-{ENV_ID}".replace("_", "-")
+BUCKET_NAME_1 = f"bucket1-{DAG_ID}".replace("_", "-")
+BUCKET_NAME_2 = f"bucket2-{DAG_ID}".replace("_", "-")
 BUCKET_NAME_1_URI = f"gs://{BUCKET_NAME_1}"
 BUCKET_NAME_2_URI = f"gs://{BUCKET_NAME_2}"
 
-PIPELINE_NAME = f"pipe-{ENV_ID}".replace("_", "-")
+PIPELINE_NAME = f"pipe-{DAG_ID}-test".replace("_", "-")
 PIPELINE = {
     "artifact": {
         "name": "cdap-data-pipeline",
@@ -271,6 +271,18 @@ with DAG(
     )
     # [END howto_cloud_data_fusion_start_pipeline_def]
 
+    # [START howto_cloud_data_fusion_start_pipeline_def_sensor]
+    start_pipeline_def_sensor = CloudDataFusionPipelineStateSensor(
+        task_id="pipeline_state_sensor_def",
+        pipeline_name=PIPELINE_NAME,
+        pipeline_id=start_pipeline_def.output,
+        expected_statuses=["COMPLETED"],
+        failure_statuses=["FAILED"],
+        instance_name=INSTANCE_NAME,
+        location=LOCATION,
+    )
+    # [END howto_cloud_data_fusion_start_pipeline_def_sensor]
+
     # [START howto_cloud_data_fusion_start_pipeline_async]
     start_pipeline_async = CloudDataFusionStartPipelineOperator(
         location=LOCATION,
@@ -299,6 +311,25 @@ with DAG(
         pipeline_name=PIPELINE_NAME,
         instance_name=INSTANCE_NAME,
         task_id="stop_pipeline",
+    )
+    # [END howto_cloud_data_fusion_stop_pipeline]
+
+    # [START howto_cloud_data_fusion_start_pipeline]
+    start_pipeline_frunid = CloudDataFusionStartPipelineOperator(
+        location=LOCATION,
+        pipeline_name=PIPELINE_NAME,
+        instance_name=INSTANCE_NAME,
+        pipeline_timeout=1000,
+        task_id="start_pipeline_for_runid",
+    )
+
+    # [START howto_cloud_data_fusion_stop_pipeline_with_runid]
+    stop_pipeline_wrunid = CloudDataFusionStopPipelineOperator(
+        location=LOCATION,
+        pipeline_name=PIPELINE_NAME,
+        instance_name=INSTANCE_NAME,
+        task_id="stop_pipeline_wrun_id",
+        run_id=start_pipeline_frunid.output,
     )
     # [END howto_cloud_data_fusion_stop_pipeline]
 
@@ -339,7 +370,10 @@ with DAG(
         >> update_instance
         >> create_pipeline
         >> list_pipelines
+        >> start_pipeline_frunid
+        >> stop_pipeline_wrunid
         >> start_pipeline_def
+        >> start_pipeline_def_sensor
         >> start_pipeline_async
         >> start_pipeline_sensor
         >> start_pipeline
