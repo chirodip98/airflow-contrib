@@ -909,6 +909,7 @@ class CloudDataFusionStopPipelineOperator(GoogleCloudBaseOperator):
         can create a namespace.
     :param api_version: The version of the api that will be requested for example 'v3'.
     :param gcp_conn_id: The connection ID to use when fetching connection info.
+    :param run_id: To stop a particular run tagged with provided run_id.
     :param impersonation_chain: Optional service account to impersonate using short-term
         credentials, or chained list of accounts required to get the access_token
         of the last account in the list, which will be impersonated in the request.
@@ -917,7 +918,6 @@ class CloudDataFusionStopPipelineOperator(GoogleCloudBaseOperator):
         If set as a sequence, the identities from the list must grant
         Service Account Token Creator IAM role to the directly preceding identity, with first
         account from the list granting this role to the originating account (templated).
-    :param run_id: To stop a particular run tagged with provided run_id
     """
 
     template_fields: Sequence[str] = ("instance_name", "pipeline_name", "impersonation_chain", "run_id")
