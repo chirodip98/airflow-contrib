@@ -83,8 +83,8 @@ PIPELINE = {
     "description": "Data Pipeline Application",
     "name": PIPELINE_NAME,
     "config": {
-        "resources": {"memoryMB": 2048, "virtualCores": 1},
-        "driverResources": {"memoryMB": 2048, "virtualCores": 1},
+        "resources": {"memoryMB": 1048, "virtualCores": 1},
+        "driverResources": {"memoryMB": 1048, "virtualCores": 1},
         "connections": [{"from": "GCS", "to": "GCS2"}],
         "comments": [],
         "postActions": [],

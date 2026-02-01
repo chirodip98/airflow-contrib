@@ -494,7 +494,11 @@ class TestCloudDataFusionStopPipelineOperator:
         )
 
         mock_hook.return_value.stop_pipeline.assert_called_once_with(
-            instance_url=INSTANCE_URL, pipeline_name=PIPELINE_NAME, namespace=NAMESPACE
+            instance_url=INSTANCE_URL,
+            pipeline_name=PIPELINE_NAME,
+            namespace=NAMESPACE,
+            pipeline_type=DataFusionPipelineType.BATCH,
+            run_id=None,
         )
 
     @mock.patch(HOOK_STR)
@@ -520,6 +524,7 @@ class TestCloudDataFusionStopPipelineOperator:
         mock_hook.return_value.stop_pipeline.assert_called_once_with(
             instance_url=INSTANCE_URL,
             pipeline_name=PIPELINE_NAME,
+            pipeline_type=DataFusionPipelineType.BATCH,
             namespace=NAMESPACE,
             run_id="sample-run-id",
         )
