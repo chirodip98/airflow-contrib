@@ -539,9 +539,7 @@ class DataFusionHook(GoogleBaseHook):
 
         :param pipeline_name: Your pipeline name.
         :param instance_url: Endpoint on which the REST APIs is accessible for the instance.
-        :param namespace: if your pipeline belongs to a Basic edition instance, the namespace ID
-            is always default. If your pipeline belongs to an Enterprise edition instance, you
-            can create a namespace.
+        :param namespace: if your pipeline belongs to a Basic edition instance, the namespace ID is always default. If your pipeline belongs to an Enterprise edition instance, you can create a namespace.
         :pipeline_type: Can be either BATCH or STREAM
         :param run_id : The specific `runId` to stop execution if available , when absent It will stop all Runs under App: pipeline_name
         """
