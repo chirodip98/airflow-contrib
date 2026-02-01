@@ -311,25 +311,7 @@ with DAG(
         pipeline_name=PIPELINE_NAME,
         instance_name=INSTANCE_NAME,
         task_id="stop_pipeline",
-    )
-    # [END howto_cloud_data_fusion_stop_pipeline]
-
-    # [START howto_cloud_data_fusion_start_pipeline]
-    start_pipeline_frunid = CloudDataFusionStartPipelineOperator(
-        location=LOCATION,
-        pipeline_name=PIPELINE_NAME,
-        instance_name=INSTANCE_NAME,
-        pipeline_timeout=1000,
-        task_id="start_pipeline_for_runid",
-    )
-
-    # [START howto_cloud_data_fusion_stop_pipeline_with_runid]
-    stop_pipeline_wrunid = CloudDataFusionStopPipelineOperator(
-        location=LOCATION,
-        pipeline_name=PIPELINE_NAME,
-        instance_name=INSTANCE_NAME,
-        task_id="stop_pipeline_wrun_id",
-        run_id=start_pipeline_frunid.output,
+        run_id=start_pipeline.output,
     )
     # [END howto_cloud_data_fusion_stop_pipeline]
 
@@ -370,8 +352,6 @@ with DAG(
         >> update_instance
         >> create_pipeline
         >> list_pipelines
-        >> start_pipeline_frunid
-        >> stop_pipeline_wrunid
         >> start_pipeline_def
         >> start_pipeline_def_sensor
         >> start_pipeline_async
