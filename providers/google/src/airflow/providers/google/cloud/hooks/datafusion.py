@@ -539,11 +539,11 @@ class DataFusionHook(GoogleBaseHook):
 
         :param pipeline_name: Your pipeline name.
         :param instance_url: Endpoint on which the REST APIs is accessible for the instance.
-        :param pipeline_type: Can be either BATCH or STREAM.
-        :param run_id: The specific run_id to stop execution if available; when absent it will stop all runs under pipeline_name.
         :param namespace: If your pipeline belongs to a Basic edition instance, the namespace ID
             is always default. If your pipeline belongs to an Enterprise edition instance, you
             can create a namespace.
+        :param pipeline_type: Can be either BATCH or STREAM.
+        :param run_id: The specific run_id to stop execution if available; when absent it will stop all runs under pipeline_name.
         """
         base_stop_url = os.path.join(
             self._base_url(instance_url, namespace),
@@ -554,7 +554,6 @@ class DataFusionHook(GoogleBaseHook):
 
         if run_id:
             url = os.path.join(base_stop_url, "runs", quote(str(run_id)), "stop")
-
         else:
             url = os.path.join(base_stop_url, "stop")
 
